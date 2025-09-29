@@ -2,14 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from openai import OpenAI
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
 # Permite requisições do seu front-end Angular (http://localhost:4200)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}})
 
-# Substitua 'SUA_CHAVE_AQUI' pela sua chave de API da OpenAI.
-# Recomenda-se armazená-la em uma variável de ambiente por segurança.
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "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")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 # Inicializa o cliente da OpenAI
 client = OpenAI(api_key=OPENAI_API_KEY)
