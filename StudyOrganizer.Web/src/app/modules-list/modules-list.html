@@ -1,0 +1,35 @@
+<app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
+<div class="container mt-4">
+    <app-alert></app-alert>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Módulos</h1>
+    </div>
+
+    <form (ngSubmit)="onAddModule()" class="mb-4">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Novo nome do módulo" name="newModule"
+                [(ngModel)]="newModuleName" required />
+            <button type="submit" class="btn btn-primary">Adicionar</button>
+        </div>
+    </form>
+
+    <div class="row row-cols-1 g-4" *ngIf="modules$ | async as modules; else loading">
+        <div class="col" *ngFor="let module of modules">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <a [routerLink]="['/disciplines', module.Id]" class="fs-5 text-decoration-none">
+                        {{ module.Name }}
+                    </a>
+                    <button (click)="onDeleteModule(module.Id)" class="btn btn-sm btn-outline-danger">
+                        Remover
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #loading>
+        <div class="text-center">
+            <p>Carregando módulos...</p>
+        </div>
+    </ng-template>
+</div>

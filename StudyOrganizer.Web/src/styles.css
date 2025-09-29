@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('bootstrap/dist/css/bootstrap.min.css');
+
+body {
+    background: linear-gradient(135deg, rgba(240, 242, 245, 0.9), rgba(224, 230, 237, 0.9)), url('assets/background_app.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}

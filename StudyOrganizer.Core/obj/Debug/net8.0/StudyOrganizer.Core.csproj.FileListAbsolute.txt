@@ -1,0 +1,11 @@
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\bin\Debug\net8.0\StudyOrganizer.Core.deps.json
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\bin\Debug\net8.0\StudyOrganizer.Core.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\bin\Debug\net8.0\StudyOrganizer.Core.pdb
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.AssemblyInfoInputs.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.AssemblyInfo.cs
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.csproj.CoreCompileInputs.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\refint\StudyOrganizer.Core.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.pdb
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\ref\StudyOrganizer.Core.dll

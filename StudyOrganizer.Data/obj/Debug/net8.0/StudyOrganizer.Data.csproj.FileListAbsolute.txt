@@ -1,0 +1,17 @@
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Data.deps.json
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Data.runtimeconfig.json
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Data.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Data.pdb
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Core.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\bin\Debug\net8.0\StudyOrganizer.Core.pdb
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.csproj.AssemblyReference.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.AssemblyInfoInputs.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.AssemblyInfo.cs
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.csproj.CoreCompileInputs.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrg.8DC21F33.Up2Date
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\refint\StudyOrganizer.Data.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.pdb
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.genruntimeconfig.cache
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\ref\StudyOrganizer.Data.dll

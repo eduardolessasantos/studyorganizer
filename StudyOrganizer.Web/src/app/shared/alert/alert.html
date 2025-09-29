@@ -1,0 +1,4 @@
+<div *ngIf="message" class="alert mt-3" [ngClass]="alertClass" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" (click)="clearMessage()" aria-label="Close"></button>
+</div>

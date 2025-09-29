@@ -1,0 +1,12 @@
+.breadcrumb-item+.breadcrumb-item::before {
+    display: inline-block;
+    padding-right: 0.5rem;
+    color: #6c757d;
+    content: var(--bs-breadcrumb-divider, "/");
+}
+
+/* Para o último item da lista (o ativo) */
+.breadcrumb-item.active {
+    color: #0d6efd;
+    /* Cor azul do Bootstrap */
+}
