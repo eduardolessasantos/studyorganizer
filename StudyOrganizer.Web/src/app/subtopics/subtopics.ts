@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable, BehaviorSubject, switchMap, finalize, map, Subject } from 'rxjs';
+import { Observable, switchMap, map, finalize } from 'rxjs';
 
 import { SubtopicsService } from '../services/subtopics.service';
 import { DisciplinesService } from '../services/disciplines.service';
@@ -10,39 +10,43 @@ import { AiContentService } from '../services/ai-content.service';
 import { MessageService } from '../services/message.service';
 
 import { Subtopic } from '../models/discipline.model';
-import { AlertComponent } from '../shared/alert/alert';
 
+// Importe a biblioteca pdf.js para a extração de conteúdo
 import * as pdfjsLib from 'pdfjs-dist';
 import { BreadcrumbComponent, BreadcrumbItem } from '../shared/breadcrumb/breadcrumb';
+import { AlertComponent } from '../shared/alert/alert';
+import { AfterViewInit } from '@angular/core';
+import * as bootstrap from 'bootstrap';
+import { SoundService } from '../services/sound.service';
+import { LoadingAnimComponent } from "../shared/loading-anim.component";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `assets/js/pdf.worker.js`;
+// Configura o caminho para o worker de pdf.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = `assets/js/pdf.worker.mjs`;
 
 @Component({
   selector: 'app-subtopics',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, BreadcrumbComponent, AlertComponent],
+  imports: [CommonModule, FormsModule, RouterModule, BreadcrumbComponent, AlertComponent, LoadingAnimComponent],
   providers: [SubtopicsService, DisciplinesService, AiContentService, MessageService],
   templateUrl: './subtopics.html',
   styleUrl: './subtopics.css'
 })
-export class SubtopicsComponent implements OnInit {
+export class SubtopicsComponent implements OnInit, AfterViewInit {
   disciplineId!: number;
-  public refreshSubtopics$: Subject<void> = new Subject<void>();
   subtopics$!: Observable<Subtopic[]>;
   newSubtopicDescription: string = '';
   breadcrumbs: BreadcrumbItem[] = [];
 
+  // Paginação e filtro
   pageSize: number = 5;
   currentPage: number = 1;
   totalPages: number = 0;
   paginatedSubtopics: Subtopic[] = [];
   filterText: string = '';
 
+  // Subtópico selecionado
   selectedSubtopic: Subtopic | null = null;
-
-  // Propriedades unificadas e novas
-  contentToSave: string = '';
-  aiPrompt: string = '';
+  content: string = ''; // campo único para IA + PDF + edição manual
   aiLoading: boolean = false;
 
   constructor(
@@ -50,42 +54,31 @@ export class SubtopicsComponent implements OnInit {
     private subtopicsService: SubtopicsService,
     private disciplinesService: DisciplinesService,
     private aiContentService: AiContentService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private soundService: SoundService
   ) { }
 
   ngOnInit(): void {
-    // this.subtopics$ = this.refreshSubtopics$.pipe(
-    //   switchMap(() => this.subtopicsService.getSubtopicsByDisciplineId(this.disciplineId)),
-    //   map(subtopics => {
-    //     const filteredSubtopics = this.filterSubtopics(subtopics);
-    //     this.totalPages = Math.ceil(filteredSubtopics.length / this.pageSize);
+    this.subtopics$ = this.route.paramMap.pipe(
+      map(params => Number(params.get('disciplineId'))),
+      switchMap(disciplineId => {
+        this.disciplineId = disciplineId;
+        this.buildBreadcrumbs();
+        return this.subtopicsService.getSubtopicsByDisciplineId(disciplineId);
+      }),
+      map(subtopics => {
+        const filteredSubtopics = this.filterSubtopics(subtopics);
+        this.totalPages = Math.ceil(filteredSubtopics.length / this.pageSize);
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        this.paginatedSubtopics = filteredSubtopics.slice(startIndex, startIndex + this.pageSize);
+        return filteredSubtopics;
+      })
+    );
+  }
 
-    //     const startIndex = (this.currentPage - 1) * this.pageSize;
-    //     this.paginatedSubtopics = filteredSubtopics.slice(startIndex, startIndex + this.pageSize);
-
-    //     return filteredSubtopics;
-    //   })
-    // );
-
-    this.route.paramMap.subscribe(params => {
-      this.disciplineId = Number(params.get('disciplineId'));
-      this.buildBreadcrumbs();
-      this.subtopics$ = this.refreshSubtopics$.pipe(
-        switchMap(() => this.subtopicsService.getSubtopicsByDisciplineId(this.disciplineId)),
-        map(subtopics => {
-          console.log(subtopics);
-          const filteredSubtopics = this.filterSubtopics(subtopics);
-          this.totalPages = Math.ceil(filteredSubtopics.length / this.pageSize);
-
-          const startIndex = (this.currentPage - 1) * this.pageSize;
-          this.paginatedSubtopics = filteredSubtopics.slice(startIndex, startIndex + this.pageSize);
-
-          return filteredSubtopics;
-        })
-      );
-
-      //this.refreshSubtopics$.next();
-    });
+  ngAfterViewInit(): void {
+    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
   }
 
   private buildBreadcrumbs(): void {
@@ -102,7 +95,7 @@ export class SubtopicsComponent implements OnInit {
   onAddSubtopic(): void {
     if (this.newSubtopicDescription.trim()) {
       const newSubtopic: Subtopic = {
-        Id: 0, // Assuming backend will assign a new Id
+        Id: 0,
         Description: this.newSubtopicDescription,
         DisciplineId: this.disciplineId,
         Status: 0,
@@ -111,16 +104,18 @@ export class SubtopicsComponent implements OnInit {
         EndDate: null,
         MasteryLevel: null,
         MaterialUrl: null,
-        Content: '' // Add this if your Subtopic model includes 'content'
+        Content: ''
       };
 
       this.subtopicsService.createSubtopic(newSubtopic).subscribe({
         next: () => {
+          this.soundService.playAdd();
           this.messageService.showSuccess('Subtópico adicionado com sucesso!');
           this.newSubtopicDescription = '';
-          this.refreshSubtopics$.next();
+          this.reloadSubtopics();
         },
         error: () => {
+          this.soundService.playError();
           this.messageService.showError('Erro ao adicionar o subtópico.');
         }
       });
@@ -132,9 +127,9 @@ export class SubtopicsComponent implements OnInit {
       this.subtopicsService.deleteSubtopic(id).subscribe({
         next: () => {
           this.messageService.showSuccess('Subtópico removido com sucesso!');
-          this.refreshSubtopics$.next();
           this.selectedSubtopic = null;
-          this.contentToSave = '';
+          this.content = '';
+          this.reloadSubtopics();
         },
         error: () => {
           this.messageService.showError('Erro ao remover o subtópico.');
@@ -143,10 +138,20 @@ export class SubtopicsComponent implements OnInit {
     }
   }
 
+  protected reloadSubtopics(): void {
+    this.subtopics$ = this.subtopicsService.getSubtopicsByDisciplineId(this.disciplineId).pipe(
+      map(subtopics => {
+        const filteredSubtopics = this.filterSubtopics(subtopics);
+        this.totalPages = Math.ceil(filteredSubtopics.length / this.pageSize);
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        this.paginatedSubtopics = filteredSubtopics.slice(startIndex, startIndex + this.pageSize);
+        return filteredSubtopics;
+      })
+    );
+  }
+
   filterSubtopics(subtopics: Subtopic[]): Subtopic[] {
-    if (!this.filterText) {
-      return subtopics;
-    }
+    if (!this.filterText) return subtopics;
     return subtopics.filter(subtopic =>
       subtopic.Description.toLowerCase().includes(this.filterText.toLowerCase())
     );
@@ -155,61 +160,36 @@ export class SubtopicsComponent implements OnInit {
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-      this.refreshSubtopics$.next();
+      this.reloadSubtopics();
     }
   }
 
-  // Método de seleção agora carrega o conteúdo existente
   selectSubtopic(subtopic: Subtopic): void {
     this.selectedSubtopic = subtopic;
-    this.contentToSave = subtopic.Content || '';
-    this.aiPrompt = ''; // Limpa o campo de prompt ao selecionar um novo subtópico
+    this.content = subtopic.Content || '';
   }
 
-  // Novo método para salvar o conteúdo unificado
-  saveContent(): void {
+  generateAiContent(prompt?: string): void {
     if (!this.selectedSubtopic) {
       this.messageService.showError('Nenhum subtópico selecionado.');
       return;
     }
 
-    const updatedSubtopic = { ...this.selectedSubtopic, content: this.contentToSave };
-
-    this.subtopicsService.updateSubtopic(updatedSubtopic).subscribe({
-      next: () => {
-        this.messageService.showSuccess('Conteúdo salvo com sucesso!');
-        this.refreshSubtopics$.next();
-      },
-      error: () => {
-        this.messageService.showError('Erro ao salvar o conteúdo.');
-      }
-    });
-  }
-
-  // Método de geração de conteúdo para IA agora usa o novo prompt
-  generateAiContent(): void {
-    if (!this.selectedSubtopic || !this.aiPrompt.trim()) {
-      this.messageService.showError('Por favor, digite uma pergunta para a IA.');
-      return;
-    }
-
     this.aiLoading = true;
-    this.aiContentService.generateContent(this.aiPrompt)
+    const query = prompt && prompt.trim() ? prompt : this.selectedSubtopic.Description;
+
+    this.aiContentService.generateContent(query)
       .pipe(finalize(() => this.aiLoading = false))
       .subscribe({
-        next: (content) => {
-          const separator = this.contentToSave ? '\n\n---\n\n' : '';
-          this.contentToSave += separator + content;
-          this.aiPrompt = ''; // Limpa o prompt após a geração
+        next: (generated) => {
+          this.content += (this.content ? '\n\n' : '') + generated;
         },
-        error: (err) => {
-          this.messageService.showError('Erro ao gerar conteúdo de IA. Por favor, tente novamente.');
-          console.error('Erro na requisição da IA:', err);
+        error: () => {
+          this.messageService.showError('Erro ao gerar conteúdo de IA.');
         }
       });
   }
 
-  // Método de extração de PDF agora concatena o conteúdo
   async extractPdfContent(files: FileList | null): Promise<void> {
     if (!files || files.length === 0) {
       this.messageService.showError('Nenhum arquivo selecionado.');
@@ -222,7 +202,7 @@ export class SubtopicsComponent implements OnInit {
     fileReader.onload = async () => {
       const arrayBuffer = fileReader.result as ArrayBuffer;
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-
+      debugger;
       try {
         const pdf = await loadingTask.promise;
         let fullText = '';
@@ -232,10 +212,15 @@ export class SubtopicsComponent implements OnInit {
           const pageText = textContent.items.map(item => (item as any).str).join(' ');
           fullText += pageText + '\n';
         }
-
-        const separator = this.contentToSave ? '\n\n---\n\n' : '';
-        this.contentToSave += separator + fullText.trim();
-
+        this.aiContentService.adaptText(fullText).subscribe({
+          next: (response) => {
+            this.content += (this.content ? '\n\n' : '') + response.content;
+          },
+          error: () => {
+            this.messageService.showError('Erro ao adaptar conteúdo do PDF.');
+          }
+        });
+        // this.content += (this.content ? '\n\n' : '') + fullText;
         this.messageService.showSuccess('Conteúdo do PDF extraído com sucesso!');
       } catch (error) {
         this.messageService.showError('Erro ao extrair conteúdo do PDF.');
@@ -243,5 +228,26 @@ export class SubtopicsComponent implements OnInit {
       }
     };
     fileReader.readAsArrayBuffer(file);
+  }
+
+  saveContent(): void {
+    if (!this.selectedSubtopic) {
+      this.messageService.showError('Nenhum subtópico selecionado.');
+      return;
+    }
+
+    const updatedSubtopic = { ...this.selectedSubtopic, Content: this.content };
+
+    this.subtopicsService.updateSubtopic(updatedSubtopic).subscribe({
+      next: () => {
+        this.soundService.playSuccess();
+        this.messageService.showSuccess('Conteúdo salvo com sucesso!');
+        this.reloadSubtopics();
+      },
+      error: () => {
+        this.soundService.playError();
+        this.messageService.showError('Erro ao salvar o conteúdo.');
+      }
+    });
   }
 }

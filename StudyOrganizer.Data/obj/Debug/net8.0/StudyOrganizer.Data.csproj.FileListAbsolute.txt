@@ -15,3 +15,4 @@ C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\refint\StudyOrga
 C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.pdb
 C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.genruntimeconfig.cache
 C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\ref\StudyOrganizer.Data.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Data\obj\Debug\net8.0\StudyOrganizer.Data.sourcelink.json

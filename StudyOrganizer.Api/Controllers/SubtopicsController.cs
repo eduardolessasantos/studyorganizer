@@ -25,6 +25,7 @@ public class SubtopicsController : ControllerBase
         public string? Notes { get; set; }
         public string? MaterialUrl { get; set; }
         public int? MasteryLevel { get; set; }
+        public string? Content { get; set; }
     }
 
     [HttpGet]
@@ -48,7 +49,8 @@ public class SubtopicsController : ControllerBase
             EndDate = s.EndDate,
             Notes = s.Notes,
             MaterialUrl = s.MaterialUrl,
-            MasteryLevel = s.MasteryLevel
+            MasteryLevel = s.MasteryLevel,
+            Content = s.Content
         }).ToList();
 
         return Ok(dtoList);
@@ -70,7 +72,8 @@ public class SubtopicsController : ControllerBase
             EndDate = s.EndDate,
             Notes = s.Notes,
             MaterialUrl = s.MaterialUrl,
-            MasteryLevel = s.MasteryLevel
+            MasteryLevel = s.MasteryLevel,
+            Content = s.Content
         };
 
         return Ok(dto);

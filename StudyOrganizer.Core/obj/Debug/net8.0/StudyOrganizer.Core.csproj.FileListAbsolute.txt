@@ -9,3 +9,4 @@ C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.C
 C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\refint\StudyOrganizer.Core.dll
 C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.pdb
 C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\ref\StudyOrganizer.Core.dll
+C:\projetos\StudyOrganizer\StudyOrganizer.Core\obj\Debug\net8.0\StudyOrganizer.Core.sourcelink.json

@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 })
 export class AiContentService {
   // A requisição agora aponta para o seu servidor Python
-  private apiUrl = 'http://localhost:5000/api/generate-content';
+  private apiUrl = 'http://localhost:5000/api';
 
   constructor(private http: HttpClient) { }
 
@@ -22,10 +22,14 @@ export class AiContentService {
       topic: topic
     };
 
-    return this.http.post<any>(this.apiUrl, body).pipe(
+    return this.http.post<any>(this.apiUrl + '/generate-content', body).pipe(
       map(res => {
         return res.content || 'Não foi possível gerar conteúdo.';
       })
     );
+  }
+
+  adaptText(text: string): Observable<{ content: string }> {
+    return this.http.post<{ content: string }>(this.apiUrl + '/adapt-pdf-content', { pdf_text: text });
   }
 }
