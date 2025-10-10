@@ -29,7 +29,13 @@ export class AiContentService {
     );
   }
 
-  adaptText(text: string): Observable<{ content: string }> {
-    return this.http.post<{ content: string }>(this.apiUrl + '/adapt-pdf-content', { pdf_text: text });
+  adaptText(text: string): Observable<string> {
+    return this.http.post<{ adapted_content: string }>(this.apiUrl + '/adapt-pdf-content', { pdf_text: text })
+      .pipe(
+        map(response => {
+          console.log('adaptText response:', response);
+          return response.adapted_content
+        })
+      );
   }
 }

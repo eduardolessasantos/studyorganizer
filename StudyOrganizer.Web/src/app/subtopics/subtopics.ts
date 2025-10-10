@@ -43,11 +43,13 @@ export class SubtopicsComponent implements OnInit, AfterViewInit {
   totalPages: number = 0;
   paginatedSubtopics: Subtopic[] = [];
   filterText: string = '';
+  linhaSeparadoraComData: string = `\n\n\n----------------- ${new Date().toLocaleString()} -----------------\n\n\n`;
 
   // Subtópico selecionado
   selectedSubtopic: Subtopic | null = null;
   content: string = ''; // campo único para IA + PDF + edição manual
   aiLoading: boolean = false;
+  aiLoadingPdf: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -182,7 +184,7 @@ export class SubtopicsComponent implements OnInit, AfterViewInit {
       .pipe(finalize(() => this.aiLoading = false))
       .subscribe({
         next: (generated) => {
-          this.content += (this.content ? '\n\n' : '') + generated;
+          this.content += (this.content ? this.linhaSeparadoraComData : '') + generated;
         },
         error: () => {
           this.messageService.showError('Erro ao gerar conteúdo de IA.');
@@ -202,7 +204,7 @@ export class SubtopicsComponent implements OnInit, AfterViewInit {
     fileReader.onload = async () => {
       const arrayBuffer = fileReader.result as ArrayBuffer;
       const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-      debugger;
+
       try {
         const pdf = await loadingTask.promise;
         let fullText = '';
@@ -212,16 +214,21 @@ export class SubtopicsComponent implements OnInit, AfterViewInit {
           const pageText = textContent.items.map(item => (item as any).str).join(' ');
           fullText += pageText + '\n';
         }
-        this.aiContentService.adaptText(fullText).subscribe({
-          next: (response) => {
-            this.content += (this.content ? '\n\n' : '') + response.content;
-          },
-          error: () => {
-            this.messageService.showError('Erro ao adaptar conteúdo do PDF.');
-          }
-        });
+        this.aiLoadingPdf = true;
+        this.aiContentService.adaptText(fullText)
+          .pipe(finalize(() => this.aiLoadingPdf = false))
+          .subscribe({
+            next: (response) => {
+              console.log('adaptText response:', response);
+              this.content += (this.content ? this.linhaSeparadoraComData : '') + response;
+            },
+            error: () => {
+              this.messageService.showError('Erro ao adaptar conteúdo do PDF.');
+            }
+          });
         // this.content += (this.content ? '\n\n' : '') + fullText;
         this.messageService.showSuccess('Conteúdo do PDF extraído com sucesso!');
+        files = null; // Limpa o input file
       } catch (error) {
         this.messageService.showError('Erro ao extrair conteúdo do PDF.');
         console.error('Erro na extração de PDF:', error);

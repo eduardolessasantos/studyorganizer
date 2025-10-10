@@ -42,10 +42,31 @@ export class SoundService {
     playSuccess() {
         if (!this.enabled) return;
         const ctx = this.ensureContext();
-        if (!ctx) return;
-        // two quick tones
-        this.playTone(880, 0.08, 'sine');
-        setTimeout(() => this.playTone(1320, 0.12, 'sine'), 100);
+        if (!ctx || !this.gainNode) return;
+
+        const now = ctx.currentTime;
+
+        const makeTone = (freq: number, startOffset: number, duration: number, type: OscillatorType = 'triangle') => {
+            const osc = ctx.createOscillator();
+            osc.type = type;
+            osc.frequency.value = freq;
+
+            const env = ctx.createGain();
+            // soft attack and smooth release
+            env.gain.setValueAtTime(0.0, now + startOffset);
+            env.gain.linearRampToValueAtTime(0.9, now + startOffset + 0.06); // attack ~60ms
+            env.gain.linearRampToValueAtTime(0.0001, now + startOffset + duration); // release
+
+            osc.connect(env);
+            env.connect(this.gainNode as GainNode);
+
+            osc.start(now + startOffset);
+            osc.stop(now + startOffset + duration + 0.02);
+        };
+
+        // two overlapping, slightly longer and softer tones
+        makeTone(660, 0, 0.36, 'triangle');
+        makeTone(990, 0.12, 0.44, 'triangle');
     }
 
     // add/creation sound
