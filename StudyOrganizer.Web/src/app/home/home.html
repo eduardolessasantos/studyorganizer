@@ -9,7 +9,11 @@
         <hr>
         <div class="container mt-3">
             <h2>Estrutura do Sistema</h2>
-            <markdown src="assets/hierarquia.md"></markdown>
+
+            <!-- Área com rolagem -->
+            <div class="markdown-scroll">
+                <markdown src="assets/hierarquia.md"></markdown>
+            </div>
         </div>
         <hr>
         <a [routerLink]="['/modules']" class="btn btn-lg btn-primary mt-4">Acessar Módulos</a>

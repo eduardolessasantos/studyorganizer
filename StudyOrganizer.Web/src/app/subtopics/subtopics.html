@@ -72,7 +72,7 @@
     <div *ngIf="selectedSubtopic" class="mt-5 card shadow-lg p-4">
         <div class="card-body">
             <h3 class="card-title text-center text-primary mb-4">
-                Wiki de "{{ selectedSubtopic.Description }}"
+                Estudo sobre "{{ selectedSubtopic.Description }}"
             </h3>
 
             <!-- Prompt para IA -->
@@ -90,10 +90,14 @@
                         <span *ngIf="aiLoading" class="spinner-border spinner-border-sm me-2"></span>
                         Gerar
                     </button>
-                    <div *ngIf="aiLoading" class="ms-2">
+                    <!-- <div *ngIf="aiLoading" class="ms-2">
                         <app-loading-anim [path]="'assets/animations/studying.json'"></app-loading-anim>
-                    </div>
+                    </div> -->
                 </div>
+            </div>
+
+            <div *ngIf="aiLoading" class="text-center mb-3">
+                <app-loading-anim [path]="'assets/animations/studying.json'"></app-loading-anim>
             </div>
 
             <!-- Upload de PDF -->
@@ -110,10 +114,14 @@
                         <span *ngIf="aiLoadingPdf" class="spinner-border spinner-border-sm me-2"></span>
                         Extrair
                     </button>
-                    <div *ngIf="aiLoadingPdf" class="ms-2">
+                    <!-- <div *ngIf="aiLoadingPdf" class="ms-2">
                         <app-loading-anim [path]="'assets/animations/reading.json'"></app-loading-anim>
-                    </div>
+                    </div> -->
                 </div>
+            </div>
+
+            <div *ngIf="aiLoadingPdf" class="text-center mb-3">
+                <app-loading-anim [path]="'assets/animations/reading.json'"></app-loading-anim>
             </div>
 
             <!-- Área unificada de edição -->

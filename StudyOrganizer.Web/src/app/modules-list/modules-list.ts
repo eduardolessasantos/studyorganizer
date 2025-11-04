@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, delay, Observable, switchMap } from 'rxjs';
 import { Module } from '../models/modulo.model';
 import { ModulesService } from '../services/modules.service';
 import { CommonModule } from '@angular/common';
@@ -8,11 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { AlertComponent } from '../shared/alert/alert';
 import { MessageService } from '../services/message.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '../shared/breadcrumb/breadcrumb';
+import { LoadingAnimComponent } from "../shared/loading-anim.component";
 
 @Component({
   selector: 'app-modules-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, BreadcrumbComponent, FormsModule, AlertComponent],
+  imports: [CommonModule, RouterModule, BreadcrumbComponent, FormsModule, AlertComponent, LoadingAnimComponent],
   providers: [ModulesService],
   templateUrl: './modules-list.html',
   styleUrl: './modules-list.css'
@@ -33,6 +34,7 @@ export class ModulesListComponent implements OnInit {
 
   ngOnInit(): void {
     this.modules$ = this.refreshModules$.pipe(
+      delay(5500),
       switchMap(() => this.modulesService.getModules())
     );
   }

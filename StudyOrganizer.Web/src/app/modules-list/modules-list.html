@@ -28,8 +28,9 @@
         </div>
     </div>
     <ng-template #loading>
-        <div class="text-center">
-            <p>Carregando módulos...</p>
+        <div class="text-center mt-4">
+            <!-- <p>Carregando módulos...</p> -->
+            <app-loading-anim id="animation" [path]="'assets/animations/loading_books.json'"></app-loading-anim>
         </div>
     </ng-template>
 </div>

@@ -9,11 +9,12 @@ import { MessageService } from '../services/message.service';
 import { AlertComponent } from "../shared/alert/alert";
 import { FormsModule } from '@angular/forms';
 import { ModulesService } from '../services/modules.service';
+import { LoadingAnimComponent } from "../shared/loading-anim.component";
 
 @Component({
   selector: 'app-disciplines',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BreadcrumbComponent, AlertComponent],
+  imports: [CommonModule, RouterModule, FormsModule, BreadcrumbComponent, AlertComponent, LoadingAnimComponent],
   providers: [DisciplinesService],
   templateUrl: './disciplines.component.html',
   styleUrl: './disciplines.component.css'
