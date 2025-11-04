@@ -1,5 +1,33 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# --- .NET build folders ---
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+
+# --- User-specific files ---
+*.user
+*.vspscc
+*.vssscc
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# --- Angular / Node ---
+/StudyOrganizer.Web/node_modules/
+/StudyOrganizer.Web/dist/
+/StudyOrganizer.Web/.angular/
+/StudyOrganizer.Web/.vscode/
+
+# --- Others ---
+appsettings.*.json
+Thumbs.db
+
 # Compiled output
 /dist
 /tmp
